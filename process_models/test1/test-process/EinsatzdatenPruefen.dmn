@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="Definitions_76910d7" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="einsatzdaten_pruefen" name="Einsatzdaten pruefen">
+    <decisionTable id="decisionTable_1" hitPolicy="FIRST">
+      <input id="input_1" label="Entfernung_km">
+        <inputExpression id="inputExpression_1" typeRef="number">
+          <text>entfernung_km</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0mwv34c" label="Hoehe_m">
+        <inputExpression id="LiteralExpression_0rk3b2e" typeRef="number">
+          <text>hoehe_m</text>
+        </inputExpression>
+      </input>
+      <output id="output_1" label="Gebiet erreichbar" name="gebiet_erreichbar" typeRef="string" biodi:width="192" />
+      <rule id="DecisionRule_1gsz3up">
+        <description>Gebiet zu weit entfernt</description>
+        <inputEntry id="UnaryTests_0aikz7l">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_17hro50">
+          <text>&lt;= 500</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_05hcq7s">
+          <text>"Gebiet nicht erreichbar"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1netpg7">
+        <description>Gebiet ist erreichbar</description>
+        <inputEntry id="UnaryTests_0sfq2f1">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0esquol">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1k6fhu8">
+          <text>"Gebiet erreichbar"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1a5peif">
+        <description>Fehler in Daten</description>
+        <inputEntry id="UnaryTests_1fe0u2f">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_15y9awx">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1bc0bi6">
+          <text>"Gebiet erreichbar"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1cykosu">
+      <dmndi:DMNShape id="DMNShape_1dhfq2s" dmnElementRef="einsatzdaten_pruefen">
+        <dc:Bounds height="80" width="180" x="157" y="151" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

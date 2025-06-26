@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="suchplan_an_drohne_senden_und_bestaetigung" name="Suchplan an Drohne senden und Bestaetigung" isExecutable="true">
+    <bpmn:ioSpecification>
+      <bpmn:dataInput id="suchplan" name="Suchplan" />
+      <bpmn:dataOutput id="suchplan_empfangen" name="Suchplan empfangen" />
+      <bpmn:inputSet>
+        <bpmn:dataInputRefs>suchplan</bpmn:dataInputRefs>
+      </bpmn:inputSet>
+      <bpmn:outputSet>
+        <bpmn:dataOutputRefs>suchplan_empfangen</bpmn:dataOutputRefs>
+      </bpmn:outputSet>
+    </bpmn:ioSpecification>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_14qezwk</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_14qezwk" sourceRef="StartEvent_1" targetRef="Event_0xtu536" />
+    <bpmn:intermediateThrowEvent id="Event_0xtu536" name="Suchplan an Drohne senden">
+      <bpmn:incoming>Flow_14qezwk</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z9ucqs</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1cphwfj" messageRef="SuchplanAnDrohne">
+        <bpmn:extensionElements>
+          <spiffworkflow:messagePayload>suchplan</spiffworkflow:messagePayload>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="Flow_0z9ucqs" sourceRef="Event_0xtu536" targetRef="Activity_1t3t304" />
+    <bpmn:receiveTask id="Activity_1t3t304" name="Auf Bestaetigung der Drohne warten" messageRef="receive_bestaetigung_drohne">
+      <bpmn:extensionElements>
+        <spiffworkflow:messageVariable>suchplan_empfangen</spiffworkflow:messageVariable>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0z9ucqs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1h6fed9</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:endEvent id="Event_0gpw9ui" name="Suchplan empfangen">
+      <bpmn:incoming>Flow_1h6fed9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1h6fed9" sourceRef="Activity_1t3t304" targetRef="Event_0gpw9ui" />
+    <bpmn:boundaryEvent id="Event_1pozcqq" name="1 Minute" attachedToRef="Activity_1t3t304">
+      <bpmn:outgoing>Flow_0bb2q1r</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0mvo8wj">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">"PT1M"</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_18zxmd1" name="Suchplan nicht empfangen">
+      <bpmn:incoming>Flow_0bb2q1r</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0bb2q1r" sourceRef="Event_1pozcqq" targetRef="Event_18zxmd1" />
+  </bpmn:process>
+  <bpmn:message id="SuchplanAnDrohne" name="SuchplanAnDrohne" />
+  <bpmn:message id="receive_bestaetigung_drohne" name="receive_bestaetigung_drohne" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="suchplan_an_drohne_senden_und_bestaetigung">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="122" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fj4s8j_di" bpmnElement="Event_0xtu536">
+        <dc:Bounds x="212" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="191" y="185" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13sr56s_di" bpmnElement="Activity_1t3t304">
+        <dc:Bounds x="310" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0gpw9ui_di" bpmnElement="Event_0gpw9ui">
+        <dc:Bounds x="482" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="472" y="185" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_18zxmd1_di" bpmnElement="Event_18zxmd1">
+        <dc:Bounds x="482" y="22" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="463" y="65" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataInput-387657560-1DI" bpmnElement="suchplan">
+        <dc:Bounds x="62" y="-5" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="56" y="52" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataOutput-668899041-1DI" bpmnElement="suchplan_empfangen">
+        <dc:Bounds x="652" y="-5" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="643" y="52" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0o8ufjr_di" bpmnElement="Event_1pozcqq">
+        <dc:Bounds x="392" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="438" y="113" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_14qezwk_di" bpmnElement="Flow_14qezwk">
+        <di:waypoint x="158" y="160" />
+        <di:waypoint x="212" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z9ucqs_di" bpmnElement="Flow_0z9ucqs">
+        <di:waypoint x="248" y="160" />
+        <di:waypoint x="310" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1h6fed9_di" bpmnElement="Flow_1h6fed9">
+        <di:waypoint x="410" y="160" />
+        <di:waypoint x="482" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bb2q1r_di" bpmnElement="Flow_0bb2q1r">
+        <di:waypoint x="410" y="102" />
+        <di:waypoint x="410" y="40" />
+        <di:waypoint x="482" y="40" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

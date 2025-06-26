@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="Child_Wetterdaten_pruefen" name="Wetterdaten prüfen" isExecutable="true">
+    <bpmn:ioSpecification>
+      <bpmn:dataInput id="einsatzdaten" name="Einsatzdaten" />
+      <bpmn:dataOutput id="wetterdaten" name="Wetterdaten" />
+      <bpmn:dataOutput id="flugerlaubnis_erteilt" name="Flugerlaubnis erteilt" />
+      <bpmn:inputSet>
+        <bpmn:dataInputRefs>einsatzdaten</bpmn:dataInputRefs>
+      </bpmn:inputSet>
+      <bpmn:outputSet>
+        <bpmn:dataOutputRefs>wetterdaten</bpmn:dataOutputRefs>
+        <bpmn:dataOutputRefs>flugerlaubnis_erteilt</bpmn:dataOutputRefs>
+      </bpmn:outputSet>
+    </bpmn:ioSpecification>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0zx056b</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0zx056b" sourceRef="StartEvent_1" targetRef="Activity_14gnvpt" />
+    <bpmn:exclusiveGateway id="Gateway_0czo3fa" name="Genehmigungsbedingung erfüllt?">
+      <bpmn:incoming>Flow_0c7eqwj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g1oinm</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ilvp72</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0c7eqwj" sourceRef="Activity_00j8alb" targetRef="Gateway_0czo3fa" />
+    <bpmn:exclusiveGateway id="Gateway_00g81ay">
+      <bpmn:incoming>Flow_0g1oinm</bpmn:incoming>
+      <bpmn:incoming>Flow_1o36441</bpmn:incoming>
+      <bpmn:outgoing>Flow_19gv6zr</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0g1oinm" name="ja" sourceRef="Gateway_0czo3fa" targetRef="Gateway_00g81ay">
+      <bpmn:conditionExpression>flugerlaubnis_erteilt == "Flugerlaubnis erteilt"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1iqdql9" name="Flugerlaubnis erteilt">
+      <bpmn:incoming>Flow_19gv6zr</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_19gv6zr" sourceRef="Gateway_00g81ay" targetRef="Event_1iqdql9" />
+    <bpmn:sequenceFlow id="Flow_0ilvp72" name="nein" sourceRef="Gateway_0czo3fa" targetRef="Activity_12j0dvv">
+      <bpmn:conditionExpression>flugerlaubnis_erteilt == "Flugerlaubnis nicht erteilt"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="Gateway_1oryfsg" name="Erlaubnis erteilt?">
+      <bpmn:incoming>Flow_0dpck5m</bpmn:incoming>
+      <bpmn:outgoing>Flow_03lopel</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1o36441</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0dpck5m" sourceRef="Activity_12j0dvv" targetRef="Gateway_1oryfsg" />
+    <bpmn:sequenceFlow id="Flow_03lopel" name="nein" sourceRef="Gateway_1oryfsg" targetRef="Event_0g4k4g6">
+      <bpmn:conditionExpression>erlaubnis_erteilt == false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_04gv6sl" name="Flugerlaubnis nicht erteilt">
+      <bpmn:incoming>Flow_0umg5bt</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0umg5bt" sourceRef="Event_0g4k4g6" targetRef="Event_04gv6sl" />
+    <bpmn:serviceTask id="Activity_14gnvpt" name="Wetterdaten abfragen">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser />
+        <spiffworkflow:serviceTaskOperator id="http/GetRequestV2" resultVariable="wetterdaten">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="&#34;https://api.open-meteo.com/v1/forecast?latitude=48.7656&#38;longitude=11.4237&#38;current=temperature_2m,wind_speed_10m&#34;" />
+            <spiffworkflow:parameter id="headers" type="any" />
+            <spiffworkflow:parameter id="params" type="any" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+            <spiffworkflow:parameter id="attempts" type="int" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zx056b</bpmn:incoming>
+      <bpmn:outgoing>Flow_07bcpaj</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:businessRuleTask id="Activity_00j8alb" name="Analyse Wetterdaten">
+      <bpmn:extensionElements>
+        <spiffworkflow:calledDecisionId>entscheidung_wetterbedingungen</spiffworkflow:calledDecisionId>
+        <spiffworkflow:preScript>temperatur = wetterdaten["body"]["current"]["temperature_2m"]</spiffworkflow:preScript>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07bcpaj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0c7eqwj</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:userTask id="Activity_12j0dvv" name="Manuelle Überprüfung">
+      <bpmn:incoming>Flow_0ilvp72</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dpck5m</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1o36441" name="ja" sourceRef="Gateway_1oryfsg" targetRef="Gateway_00g81ay">
+      <bpmn:conditionExpression>erlaubnis_erteilt == true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:intermediateCatchEvent id="Event_0g4k4g6" name="5 Minuten">
+      <bpmn:incoming>Flow_03lopel</bpmn:incoming>
+      <bpmn:outgoing>Flow_0umg5bt</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0rqeeff">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">"PT5M"</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_07bcpaj" sourceRef="Activity_14gnvpt" targetRef="Activity_00j8alb" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Child_Wetterdaten_pruefen">
+      <bpmndi:BPMNShape id="DataOutput-931493065-1DI" bpmnElement="flugerlaubnis_erteilt">
+        <dc:Bounds x="902" y="-15" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="886" y="42" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="52" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0czo3fa_di" bpmnElement="Gateway_0czo3fa" isMarkerVisible="true">
+        <dc:Bounds x="725" y="152" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="708" y="122" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_00g81ay_di" bpmnElement="Gateway_00g81ay" isMarkerVisible="true">
+        <dc:Bounds x="845" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1iqdql9_di" bpmnElement="Event_1iqdql9">
+        <dc:Bounds x="972" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="956" y="202" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1oryfsg_di" bpmnElement="Gateway_1oryfsg" isMarkerVisible="true">
+        <dc:Bounds x="845" y="265" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="905" y="283" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04gv6sl_di" bpmnElement="Event_04gv6sl">
+        <dc:Bounds x="972" y="372" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="956" y="415" width="68" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1b1oj3b_di" bpmnElement="Activity_14gnvpt">
+        <dc:Bounds x="140" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0l2ffoh_di" bpmnElement="Activity_00j8alb">
+        <dc:Bounds x="560" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0k4mzzz_di" bpmnElement="Activity_12j0dvv">
+        <dc:Bounds x="700" y="250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0czwea0_di" bpmnElement="Event_0g4k4g6">
+        <dc:Bounds x="852" y="372" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="845" y="415" width="50" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataInput-372606393-1DI" bpmnElement="einsatzdaten">
+        <dc:Bounds x="52" y="15" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="38" y="72" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataOutput-790404049-1DI" bpmnElement="wetterdaten">
+        <dc:Bounds x="1012" y="-15" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="999" y="42" width="62" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0zx056b_di" bpmnElement="Flow_0zx056b">
+        <di:waypoint x="88" y="177" />
+        <di:waypoint x="140" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0c7eqwj_di" bpmnElement="Flow_0c7eqwj">
+        <di:waypoint x="660" y="177" />
+        <di:waypoint x="725" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g1oinm_di" bpmnElement="Flow_0g1oinm">
+        <di:waypoint x="775" y="177" />
+        <di:waypoint x="845" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="806" y="159" width="9" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19gv6zr_di" bpmnElement="Flow_19gv6zr">
+        <di:waypoint x="895" y="177" />
+        <di:waypoint x="972" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ilvp72_di" bpmnElement="Flow_0ilvp72">
+        <di:waypoint x="750" y="202" />
+        <di:waypoint x="750" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="754" y="221" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dpck5m_di" bpmnElement="Flow_0dpck5m">
+        <di:waypoint x="800" y="290" />
+        <di:waypoint x="845" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03lopel_di" bpmnElement="Flow_03lopel">
+        <di:waypoint x="870" y="315" />
+        <di:waypoint x="870" y="372" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="874" y="341" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0umg5bt_di" bpmnElement="Flow_0umg5bt">
+        <di:waypoint x="888" y="390" />
+        <di:waypoint x="972" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1o36441_di" bpmnElement="Flow_1o36441">
+        <di:waypoint x="870" y="265" />
+        <di:waypoint x="870" y="202" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="881" y="231" width="9" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07bcpaj_di" bpmnElement="Flow_07bcpaj">
+        <di:waypoint x="240" y="177" />
+        <di:waypoint x="560" y="177" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

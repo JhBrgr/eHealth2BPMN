@@ -1,0 +1,9 @@
+{
+    "description": "",
+    "display_name": "test-process",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "drohnengesttzte-suche-und-rettung-v2.bpmn",
+    "primary_process_id": "Process_drohnengesttzte_suche_und_rettung_v2_mghi1u0"
+}

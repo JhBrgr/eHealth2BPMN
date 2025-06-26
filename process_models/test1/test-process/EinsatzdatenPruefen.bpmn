@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="Child_Einsatzdaten_pruefen" name="Einsatzdaten prüfen" isExecutable="true">
+    <bpmn:ioSpecification>
+      <bpmn:dataOutput id="einsatzdaten" name="Einsatzdaten" />
+      <bpmn:inputSet />
+      <bpmn:outputSet>
+        <bpmn:dataOutputRefs>einsatzdaten</bpmn:dataOutputRefs>
+      </bpmn:outputSet>
+    </bpmn:ioSpecification>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0d9gfd3</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0d9gfd3" sourceRef="StartEvent_1" targetRef="Activity_1t48wmo" />
+    <bpmn:sequenceFlow id="Flow_0asd1b3" sourceRef="Activity_1t48wmo" targetRef="Activity_1lhfkqw" />
+    <bpmn:exclusiveGateway id="Gateway_0s6urne" name="Gebiet erreichbar?">
+      <bpmn:incoming>Flow_0ppzkde</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ykbimh</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0rqaik3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_1sok3h5" name="Gebiet erreichbar">
+      <bpmn:incoming>Flow_0ykbimh</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ykbimh" name="ja" sourceRef="Gateway_0s6urne" targetRef="Event_1sok3h5">
+      <bpmn:conditionExpression>gebiet_erreichbar == "Gebiet erreichbar"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sendTask id="Activity_1t48wmo" name="Anfrage Einsatzdaten" messageRef="anfrage_einsatzdaten">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_0d9gfd3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0asd1b3</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:receiveTask id="Activity_1lhfkqw" name="Einsatzdaten erhalten" messageRef="einsatzdaten_erhalten">
+      <bpmn:extensionElements>
+        <spiffworkflow:messageVariable>einsatzdaten</spiffworkflow:messageVariable>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0asd1b3</bpmn:incoming>
+      <bpmn:outgoing>Flow_00j83ih</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:sequenceFlow id="Flow_0rqaik3" name="nein" sourceRef="Gateway_0s6urne" targetRef="Event_047nopp">
+      <bpmn:conditionExpression>gebiet_erreichbar == "Gebiet nicht erreichbar"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:intermediateThrowEvent id="Event_047nopp" name="Einsatzteam über Nicht Erreichbarkeit informieren">
+      <bpmn:incoming>Flow_0rqaik3</bpmn:incoming>
+      <bpmn:outgoing>Flow_000mqem</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1nfz697" messageRef="einsatzteam_nicht_erreichbarkeit_informieren">
+        <bpmn:extensionElements />
+      </bpmn:messageEventDefinition>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="Flow_000mqem" sourceRef="Event_047nopp" targetRef="Event_02g20g8" />
+    <bpmn:endEvent id="Event_02g20g8" name="Gebiet nicht erreichbar">
+      <bpmn:incoming>Flow_000mqem</bpmn:incoming>
+      <bpmn:escalationEventDefinition id="EscalationEventDefinition_0jzlje2" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_00j83ih" sourceRef="Activity_1lhfkqw" targetRef="einsatzdaten_pruefen" />
+    <bpmn:businessRuleTask id="einsatzdaten_pruefen" name="Einsatzdaten pruefen">
+      <bpmn:extensionElements>
+        <spiffworkflow:calledDecisionId>einsatzdaten_pruefen</spiffworkflow:calledDecisionId>
+        <spiffworkflow:preScript>entfernung_km = einsatzdaten["entfernung_km"]
+hoehe_m = einsatzdaten["hoehe_m"]
+
+</spiffworkflow:preScript>
+        <spiffworkflow:postScript />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_00j83ih</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ppzkde</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:sequenceFlow id="Flow_0ppzkde" sourceRef="einsatzdaten_pruefen" targetRef="Gateway_0s6urne" />
+  </bpmn:process>
+  <bpmn:message id="anfrage_einsatzdaten" name="anfrage_einsatzdaten" />
+  <bpmn:message id="einsatzteam_nicht_erreichbarkeit_informieren" name="einsatzteam_nicht_erreichbarkeit_informieren" />
+  <bpmn:message id="einsatzdaten_erhalten" name="einsatzdaten_erhalten" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Child_Einsatzdaten_pruefen">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="102" y="132" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0s6urne_di" bpmnElement="Gateway_0s6urne" isMarkerVisible="true">
+        <dc:Bounds x="785" y="125" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="781" y="88" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1sok3h5_di" bpmnElement="Event_1sok3h5">
+        <dc:Bounds x="902" y="132" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="876" y="175" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06pwd8f_di" bpmnElement="Activity_1t48wmo">
+        <dc:Bounds x="190" y="110" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1tapiam_di" bpmnElement="Activity_1lhfkqw">
+        <dc:Bounds x="350" y="110" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_18oevro_di" bpmnElement="Event_047nopp">
+        <dc:Bounds x="902" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="878" y="285" width="89" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1cqs0yj_di" bpmnElement="Event_02g20g8">
+        <dc:Bounds x="1012" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1000" y="285" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1scvmpj_di" bpmnElement="einsatzdaten_pruefen">
+        <dc:Bounds x="620" y="110" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataOutput-396749271-1DI" bpmnElement="einsatzdaten">
+        <dc:Bounds x="892" y="-35" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="878" y="22" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0d9gfd3_di" bpmnElement="Flow_0d9gfd3">
+        <di:waypoint x="138" y="150" />
+        <di:waypoint x="190" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0asd1b3_di" bpmnElement="Flow_0asd1b3">
+        <di:waypoint x="290" y="150" />
+        <di:waypoint x="350" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ykbimh_di" bpmnElement="Flow_0ykbimh">
+        <di:waypoint x="835" y="150" />
+        <di:waypoint x="902" y="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="864" y="132" width="9" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rqaik3_di" bpmnElement="Flow_0rqaik3">
+        <di:waypoint x="810" y="175" />
+        <di:waypoint x="810" y="260" />
+        <di:waypoint x="902" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="814" y="215" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_000mqem_di" bpmnElement="Flow_000mqem">
+        <di:waypoint x="938" y="260" />
+        <di:waypoint x="1012" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00j83ih_di" bpmnElement="Flow_00j83ih">
+        <di:waypoint x="450" y="150" />
+        <di:waypoint x="620" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ppzkde_di" bpmnElement="Flow_0ppzkde">
+        <di:waypoint x="720" y="150" />
+        <di:waypoint x="785" y="150" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

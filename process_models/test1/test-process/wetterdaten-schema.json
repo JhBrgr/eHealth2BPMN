@@ -1,0 +1,4 @@
+{
+  "temperature": "{{ wetterdaten.current.temperature_2m }}",
+  "wind_speed": "{{ wetterdaten.current.wind_speed_10m }}"
+}

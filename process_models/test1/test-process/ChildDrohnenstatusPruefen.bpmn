@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="Child_Drohnenstatus_pruefen" name="Child Drohnenstatus pruefen" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1nz6xrg</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1qf1980" sourceRef="Gateway_1ho1oy0" targetRef="Activity_0febz52" />
+    <bpmn:sequenceFlow id="Flow_1wvdhhu" sourceRef="Gateway_1ho1oy0" targetRef="Activity_13xprnv" />
+    <bpmn:sequenceFlow id="Flow_055nf9r" sourceRef="Activity_0febz52" targetRef="Gateway_1t9r2ko" />
+    <bpmn:exclusiveGateway id="Gateway_1t9r2ko" name="Verbindung ok?">
+      <bpmn:incoming>Flow_055nf9r</bpmn:incoming>
+      <bpmn:outgoing>Flow_081ukiv</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ybbe7n</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_0zgfv6o" name="Akku ok?">
+      <bpmn:incoming>Flow_1059fx4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sw8wcb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0vig498</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1059fx4" sourceRef="Activity_13xprnv" targetRef="Gateway_0zgfv6o" />
+    <bpmn:sequenceFlow id="Flow_081ukiv" name="ja" sourceRef="Gateway_1t9r2ko" targetRef="Gateway_14dig9f" />
+    <bpmn:parallelGateway id="Gateway_14dig9f">
+      <bpmn:incoming>Flow_081ukiv</bpmn:incoming>
+      <bpmn:incoming>Flow_1sw8wcb</bpmn:incoming>
+      <bpmn:outgoing>Flow_08xdkw1</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1sw8wcb" name="ja" sourceRef="Gateway_0zgfv6o" targetRef="Gateway_14dig9f" />
+    <bpmn:endEvent id="Event_0f8mpw8" name="Verbindung verloren">
+      <bpmn:incoming>Flow_1ybbe7n</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ybbe7n" name="nein" sourceRef="Gateway_1t9r2ko" targetRef="Event_0f8mpw8" />
+    <bpmn:endEvent id="Event_1c2z072" name="Akkustand niedrig">
+      <bpmn:incoming>Flow_0vig498</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0vig498" name="nein" sourceRef="Gateway_0zgfv6o" targetRef="Event_1c2z072" />
+    <bpmn:sequenceFlow id="Flow_08xdkw1" sourceRef="Gateway_14dig9f" targetRef="Event_00we3no" />
+    <bpmn:intermediateCatchEvent id="Event_00we3no" name="1 min warten">
+      <bpmn:incoming>Flow_08xdkw1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1t3hv01</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1qo2iry">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">"PT1M"</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_1t3hv01" sourceRef="Event_00we3no" targetRef="Gateway_0bgkc45" />
+    <bpmn:parallelGateway id="Gateway_1ho1oy0">
+      <bpmn:incoming>Flow_05hmg9d</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qf1980</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1wvdhhu</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="Gateway_0bgkc45">
+      <bpmn:incoming>Flow_1nz6xrg</bpmn:incoming>
+      <bpmn:incoming>Flow_1t3hv01</bpmn:incoming>
+      <bpmn:outgoing>Flow_05hmg9d</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1nz6xrg" sourceRef="StartEvent_1" targetRef="Gateway_0bgkc45" />
+    <bpmn:sequenceFlow id="Flow_05hmg9d" sourceRef="Gateway_0bgkc45" targetRef="Gateway_1ho1oy0" />
+    <bpmn:scriptTask id="Activity_0febz52" name="Verbindung prüfen">
+      <bpmn:documentation>Check connection of drone to coordination center</bpmn:documentation>
+      <bpmn:incoming>Flow_1qf1980</bpmn:incoming>
+      <bpmn:outgoing>Flow_055nf9r</bpmn:outgoing>
+      <bpmn:script>def check_connection_to_drone(task):
+    return True
+</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Activity_13xprnv" name="Akku prüfen">
+      <bpmn:incoming>Flow_1wvdhhu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1059fx4</bpmn:outgoing>
+      <bpmn:script>def check_battery_level(task)
+    return "Battery Level OK"</bpmn:script>
+    </bpmn:scriptTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Child_Drohnenstatus_pruefen">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="-858" y="72" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ekld07_di" bpmnElement="Gateway_1t9r2ko" isMarkerVisible="true">
+        <dc:Bounds x="-405" y="-5" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-419.5" y="48" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0zgfv6o_di" bpmnElement="Gateway_0zgfv6o" isMarkerVisible="true">
+        <dc:Bounds x="-405" y="175" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-404" y="163" width="47" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0t3b22i_di" bpmnElement="Gateway_14dig9f">
+        <dc:Bounds x="-285" y="65" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f8mpw8_di" bpmnElement="Event_0f8mpw8">
+        <dc:Bounds x="-178" y="-68" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-189" y="-25" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1c2z072_di" bpmnElement="Event_1c2z072">
+        <dc:Bounds x="-168" y="232" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-195" y="275" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0miix91_di" bpmnElement="Event_00we3no">
+        <dc:Bounds x="-98" y="72" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-113" y="48" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_16ce2tf_di" bpmnElement="Gateway_1ho1oy0">
+        <dc:Bounds x="-685" y="65" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0bgkc45_di" bpmnElement="Gateway_0bgkc45" isMarkerVisible="true">
+        <dc:Bounds x="-765" y="65" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xaf5sn_di" bpmnElement="Activity_0febz52">
+        <dc:Bounds x="-570" y="-20" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08lzm5r_di" bpmnElement="Activity_13xprnv">
+        <dc:Bounds x="-570" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1qf1980_di" bpmnElement="Flow_1qf1980">
+        <di:waypoint x="-660" y="65" />
+        <di:waypoint x="-660" y="20" />
+        <di:waypoint x="-570" y="20" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wvdhhu_di" bpmnElement="Flow_1wvdhhu">
+        <di:waypoint x="-660" y="115" />
+        <di:waypoint x="-660" y="200" />
+        <di:waypoint x="-570" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_055nf9r_di" bpmnElement="Flow_055nf9r">
+        <di:waypoint x="-470" y="20" />
+        <di:waypoint x="-405" y="20" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1059fx4_di" bpmnElement="Flow_1059fx4">
+        <di:waypoint x="-470" y="200" />
+        <di:waypoint x="-405" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_081ukiv_di" bpmnElement="Flow_081ukiv">
+        <di:waypoint x="-365" y="10" />
+        <di:waypoint x="-260" y="10" />
+        <di:waypoint x="-260" y="65" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-316" y="-8" width="9" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sw8wcb_di" bpmnElement="Flow_1sw8wcb">
+        <di:waypoint x="-355" y="200" />
+        <di:waypoint x="-260" y="200" />
+        <di:waypoint x="-260" y="115" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-312" y="182" width="9" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ybbe7n_di" bpmnElement="Flow_1ybbe7n">
+        <di:waypoint x="-380" y="-5" />
+        <di:waypoint x="-380" y="-50" />
+        <di:waypoint x="-178" y="-50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-376" y="-33" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vig498_di" bpmnElement="Flow_0vig498">
+        <di:waypoint x="-380" y="225" />
+        <di:waypoint x="-380" y="250" />
+        <di:waypoint x="-168" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-376" y="235" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08xdkw1_di" bpmnElement="Flow_08xdkw1">
+        <di:waypoint x="-235" y="90" />
+        <di:waypoint x="-98" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1t3hv01_di" bpmnElement="Flow_1t3hv01">
+        <di:waypoint x="-60" y="90" />
+        <di:waypoint x="-60" y="330" />
+        <di:waypoint x="-740" y="330" />
+        <di:waypoint x="-740" y="115" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nz6xrg_di" bpmnElement="Flow_1nz6xrg">
+        <di:waypoint x="-822" y="90" />
+        <di:waypoint x="-765" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05hmg9d_di" bpmnElement="Flow_05hmg9d">
+        <di:waypoint x="-715" y="90" />
+        <di:waypoint x="-685" y="90" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

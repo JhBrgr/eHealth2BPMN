@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_76910d7" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="drohneneinsatzparameter_bestimmen1" name="Drohneneinsatzparameter bestimmen">
+    <decisionTable id="decisionTable_1">
+      <input id="input_1" label="Temperatur">
+        <inputExpression id="inputExpression_1" typeRef="number">
+          <text>temperatur</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1u0fxsw" label="Windgeschwindigkeit">
+        <inputExpression id="LiteralExpression_1lhbp0t" typeRef="number">
+          <text>windgeschwindigkeit</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_18ovdr5" label="Zugang moeglich">
+        <inputExpression id="LiteralExpression_1xwdxtk" typeRef="boolean">
+          <text>zugang_moeglich</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_09w2a0o" label="Flugverbot Zone">
+        <inputExpression id="LiteralExpression_0x91hmd" typeRef="boolean">
+          <text>flugverbot_zone</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1k5b7gs" label="Entfernung km">
+        <inputExpression id="LiteralExpression_1aen450" typeRef="number">
+          <text>entfernung_km</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0wri0rt" label="Hoehe_m">
+        <inputExpression id="LiteralExpression_18bis73" typeRef="number">
+          <text>hoehe_m</text>
+        </inputExpression>
+      </input>
+      <output id="output_1" label="Flughöhe_m" name="flughoehe_m" typeRef="number" />
+      <output id="OutputClause_099ju84" label="Kamera_winkel" name="kamera_winkel" typeRef="number" />
+      <output id="OutputClause_00kibtk" label="Suchmuster" name="suchmuster" typeRef="string" />
+      <output id="OutputClause_0hvwhnb" label="Fluggeschwindigkeit_kmh" name="fluggeschwindigkeit_kmh" typeRef="number" />
+      <rule id="DecisionRule_1sgx4g0">
+        <inputEntry id="UnaryTests_04n9tee">
+          <text>&gt; 5</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0oyimlf">
+          <text>&gt; 10</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1qlp4sw">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0bnb1ie">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_03912i0">
+          <text>&lt;= 3</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0pn6l6p">
+          <text>&lt;= 150</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_038p4b0">
+          <text>60</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1v8rx9p">
+          <text>90</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1lquvx9">
+          <text>"Raster"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_08lt2mj">
+          <text>25</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1knbya7">
+        <inputEntry id="UnaryTests_1oauhws">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_14jx8a7">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0cnjo8x">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1hxo2de">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1dm5lix">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_13rs2z2">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0ec6uvh">
+          <text>80</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0wmuosl">
+          <text>120</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0kq8bd5">
+          <text>"Spiral"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0vbb565">
+          <text>40</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1cykosu">
+      <dmndi:DMNShape id="DMNShape_1dhfq2s" dmnElementRef="drohneneinsatzparameter_bestimmen1">
+        <dc:Bounds height="80" width="180" x="157" y="151" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

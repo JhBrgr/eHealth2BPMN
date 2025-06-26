@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="Child_Sub_Fundstelle_ueberwachen" name="Child Sub Fundstelle überwachen" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1lll5qw</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1lll5qw" sourceRef="StartEvent_1" targetRef="Activity_0u5r0sh" />
+    <bpmn:callActivity id="Activity_0u5r0sh" name="Status auswerten" calledElement="Child_Sub_Status_auswerten">
+      <bpmn:incoming>Flow_1lll5qw</bpmn:incoming>
+      <bpmn:outgoing>Flow_11src1g</bpmn:outgoing>
+      <bpmn:standardLoopCharacteristics>
+        <bpmn:loopCondition xsi:type="bpmn:tFormalExpression">rettungsteam_sichtbar == true</bpmn:loopCondition>
+      </bpmn:standardLoopCharacteristics>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_11src1g" sourceRef="Activity_0u5r0sh" targetRef="Event_04vzyfk" />
+    <bpmn:sequenceFlow id="Flow_0297xi6" sourceRef="Event_04vzyfk" targetRef="Event_1boyzk0" />
+    <bpmn:intermediateThrowEvent id="Event_1boyzk0" name="Rückflugbefehl">
+      <bpmn:incoming>Flow_0297xi6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xbic8n</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0qza9g9" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="Event_1ti6uy1" name="Erfolgreiche Suche">
+      <bpmn:incoming>Flow_1xbic8n</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1xbic8n" sourceRef="Event_1boyzk0" targetRef="Event_1ti6uy1" />
+    <bpmn:intermediateCatchEvent id="Event_04vzyfk" name="Rettungsteam sichtbar">
+      <bpmn:incoming>Flow_11src1g</bpmn:incoming>
+      <bpmn:outgoing>Flow_0297xi6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1ozn4lt" messageRef="rettungsteam_sichtbar">
+        <bpmn:extensionElements />
+      </bpmn:messageEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:textAnnotation id="TextAnnotation_1b5jgru">
+      <bpmn:text>Bis Rettungsteam sichtbar</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_069fzqo" associationDirection="None" sourceRef="Activity_0u5r0sh" targetRef="TextAnnotation_1b5jgru" />
+  </bpmn:process>
+  <bpmn:message id="rettungsteam_sichtbar" name="rettungsteam_sichtbar" />
+  <bpmn:correlationKey id="CorrelationKey_0bdxv2h" name="MainCorrelationKey" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Child_Sub_Fundstelle_ueberwachen">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="-778" y="122" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hjn6bt_di" bpmnElement="Activity_0u5r0sh">
+        <dc:Bounds x="-690" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0w3d296_di" bpmnElement="Event_1boyzk0">
+        <dc:Bounds x="-448" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-467" y="165" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ti6uy1_di" bpmnElement="Event_1ti6uy1">
+        <dc:Bounds x="-358" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-370" y="165" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_12zur9c_di" bpmnElement="Event_04vzyfk">
+        <dc:Bounds x="-538" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-555" y="165" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1b5jgru_di" bpmnElement="TextAnnotation_1b5jgru">
+        <dc:Bounds x="-590" y="20" width="100" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1lll5qw_di" bpmnElement="Flow_1lll5qw">
+        <di:waypoint x="-742" y="140" />
+        <di:waypoint x="-690" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11src1g_di" bpmnElement="Flow_11src1g">
+        <di:waypoint x="-590" y="140" />
+        <di:waypoint x="-538" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0297xi6_di" bpmnElement="Flow_0297xi6">
+        <di:waypoint x="-502" y="140" />
+        <di:waypoint x="-448" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xbic8n_di" bpmnElement="Flow_1xbic8n">
+        <di:waypoint x="-412" y="140" />
+        <di:waypoint x="-358" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_069fzqo_di" bpmnElement="Association_069fzqo">
+        <di:waypoint x="-602" y="100" />
+        <di:waypoint x="-578" y="75" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

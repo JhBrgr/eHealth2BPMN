@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="Child_Fundstellenerfassung" name="Child Fundstellenprozess">
+    <bpmn:startEvent id="Event_0w4m66l">
+      <bpmn:outgoing>Flow_1ks7hrh</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1ks7hrh" sourceRef="Event_0w4m66l" targetRef="Activity_0lhrtkj" />
+    <bpmn:callActivity id="Activity_0lhrtkj" name="Fundstelle erfassen" calledElement="Child_Sub_Fundstelle_erfassen">
+      <bpmn:incoming>Flow_1ks7hrh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qye01a</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:exclusiveGateway id="Gateway_0te6d01">
+      <bpmn:incoming>Flow_1qye01a</bpmn:incoming>
+      <bpmn:outgoing>Flow_0edeaw6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15sif65</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0yb57q8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1qye01a" sourceRef="Activity_0lhrtkj" targetRef="Gateway_0te6d01" />
+    <bpmn:sequenceFlow id="Flow_0edeaw6" name="Bericht senden" sourceRef="Gateway_0te6d01" targetRef="Activity_0a9evv5">
+      <bpmn:conditionExpression>fundstelle_erfassen_result == "Bericht senden"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_0a9evv5" name="Abschlussbericht erstellen &#38; senden">
+      <bpmn:extensionElements>
+        <spiffworkflow:preScript>bericht = {
+    "status": "Nicht erfolgreich",
+    "beschreibung": "Keine Fundstelle entdeckt.",
+    "zeitpunkt": str(datetime.now()),
+    "bearbeiter": data.get("nutzername", "System")
+}
+data["abschlussbericht"] = bericht
+</spiffworkflow:preScript>
+        <spiffworkflow:serviceTaskOperator id="http/PostRequestV2">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" />
+            <spiffworkflow:parameter id="headers" type="any" />
+            <spiffworkflow:parameter id="data" type="any" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0edeaw6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1t7vxap</bpmn:outgoing>
+      <bpmn:ioSpecification>
+        <bpmn:inputSet />
+      </bpmn:ioSpecification>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1t7vxap" sourceRef="Activity_0a9evv5" targetRef="Event_1aeq5sj" />
+    <bpmn:endEvent id="Event_1aeq5sj" name="Nicht erfolgreiche Suche">
+      <bpmn:incoming>Flow_1t7vxap</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_15sif65" name="Fundmeldung senden" sourceRef="Gateway_0te6d01" targetRef="Activity_1e5l5zt">
+      <bpmn:conditionExpression>fundstelle_erfassen_result == "Fundstelle überwachen"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:callActivity id="Activity_1e5l5zt" name="Fundstelle überwachen" calledElement="Child_Sub_Fundstelle_ueberwachen">
+      <bpmn:incoming>Flow_15sif65</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rtpf12</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_05c9qkx" name="Erfolgreiche Suche">
+      <bpmn:incoming>Flow_0rtpf12</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0rtpf12" sourceRef="Activity_1e5l5zt" targetRef="Event_05c9qkx" />
+    <bpmn:endEvent id="Event_0ow0lym" name="Suche fortsetzen">
+      <bpmn:incoming>Flow_0yb57q8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0yb57q8" name="Suche fortsetzen" sourceRef="Gateway_0te6d01" targetRef="Event_0ow0lym">
+      <bpmn:conditionExpression>fundstelle_erfassen_result == "Suche fortsetzen"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmn:correlationKey id="CorrelationKey_023dbn2" name="MainCorrelationKey" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Child_Fundstellenerfassung">
+      <bpmndi:BPMNShape id="Event_0w4m66l_di" bpmnElement="Event_0w4m66l">
+        <dc:Bounds x="-358" y="-68" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1do45y8_di" bpmnElement="Activity_0lhrtkj">
+        <dc:Bounds x="-270" y="-90" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0te6d01_di" bpmnElement="Gateway_0te6d01" isMarkerVisible="true">
+        <dc:Bounds x="-75" y="-75" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18vxs6z_di" bpmnElement="Activity_0a9evv5">
+        <dc:Bounds x="-100" y="-250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05p50jr_di" bpmnElement="Activity_1e5l5zt">
+        <dc:Bounds x="90" y="-90" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05c9qkx_di" bpmnElement="Event_05c9qkx">
+        <dc:Bounds x="282" y="-68" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="270" y="-25" width="61" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ow0lym_di" bpmnElement="Event_0ow0lym">
+        <dc:Bounds x="-68" y="62" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-92" y="105" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1aeq5sj_di" bpmnElement="Event_1aeq5sj">
+        <dc:Bounds x="82" y="-228" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="70" y="-185" width="60" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ks7hrh_di" bpmnElement="Flow_1ks7hrh">
+        <di:waypoint x="-322" y="-50" />
+        <di:waypoint x="-270" y="-50" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qye01a_di" bpmnElement="Flow_1qye01a">
+        <di:waypoint x="-170" y="-50" />
+        <di:waypoint x="-75" y="-50" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0edeaw6_di" bpmnElement="Flow_0edeaw6">
+        <di:waypoint x="-50" y="-75" />
+        <di:waypoint x="-50" y="-170" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-73" y="-125" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1t7vxap_di" bpmnElement="Flow_1t7vxap">
+        <di:waypoint x="0" y="-210" />
+        <di:waypoint x="82" y="-210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15sif65_di" bpmnElement="Flow_15sif65">
+        <di:waypoint x="-25" y="-50" />
+        <di:waypoint x="90" y="-50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-2" y="-74" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rtpf12_di" bpmnElement="Flow_0rtpf12">
+        <di:waypoint x="190" y="-50" />
+        <di:waypoint x="282" y="-50" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yb57q8_di" bpmnElement="Flow_0yb57q8">
+        <di:waypoint x="-50" y="-25" />
+        <di:waypoint x="-50" y="62" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-77" y="16" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,13 @@
+{
+    "correlation_keys": null,
+    "correlation_properties": null,
+    "data_store_specifications": {},
+    "description": "test",
+    "display_name": "test1",
+    "messages": {
+        "SuchplanAnDrohne": {
+            "correlation_properties": {},
+            "schema": {}
+        }
+    }
+}
