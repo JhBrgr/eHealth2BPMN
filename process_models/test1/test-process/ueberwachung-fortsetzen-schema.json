@@ -1,0 +1,27 @@
+{
+  "title": "Niedriger Akkustand",
+  "description": "Der Akkustand der Drohne ist niedrig, ggf. sollte die Suche abgebrochen werden.",
+  "type": "object",
+  "required": [
+    "firstName"
+  ],
+  "properties": {
+    "multipleChoicesList": {
+      "type": "array",
+      "title": "Suche trotzdem fortsetzen?",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Ja",
+          "Nein"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "firstName": {
+      "type": "string",
+      "title": "Begründung",
+      "default": "..."
+    }
+  }
+}

@@ -2,7 +2,7 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.6.1">
   <bpmn:collaboration id="Collaboration_0e3hf5p">
     <bpmn:participant id="Participant_0o39u7x" name="Drohnenüberwachungsprozess" processRef="Process_xfibnmp" />
-    <bpmn:correlationKey id="CorrelationKey_1mf71yw" name="MainCorrelationKey" />
+    <bpmn:correlationKey id="CorrelationKey_1av4eza" name="MainCorrelationKey" />
   </bpmn:collaboration>
   <bpmn:process id="Process_xfibnmp" isExecutable="true">
     <bpmn:laneSet id="LaneSet_08sscye">
@@ -27,8 +27,8 @@
         <bpmn:flowNodeRef>Event_0k9fi66</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1jwo5ys</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Event_1og4ixx</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Event_11gztyv</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_0ru13bx</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_11gztyv</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:callActivity id="Activity_12mcgu1" name="Drohnenstatus prüfen" calledElement="Child_Drohnenstatus_pruefen">
@@ -80,7 +80,9 @@
     <bpmn:intermediateThrowEvent id="Event_0u8773g" name="Verbindung zur Drohne verloren">
       <bpmn:incoming>Flow_1aja510</bpmn:incoming>
       <bpmn:outgoing>Flow_0yzvnqo</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0mfmx3h" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0mfmx3h" messageRef="Verbindung-verloren">
+        <bpmn:extensionElements />
+      </bpmn:messageEventDefinition>
     </bpmn:intermediateThrowEvent>
     <bpmn:startEvent id="StartEvent_1" name="Suchplan an Drohne gesendet">
       <bpmn:outgoing>Flow_0lmpxp8</bpmn:outgoing>
@@ -94,6 +96,13 @@
       <bpmn:incoming>Flow_12mhw3v</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:userTask id="Activity_0hba9y0" name="Manuelle Entscheidung nach der geschätzten Zeit">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser></spiffworkflow:instructionsForEndUser>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="ueberwachung-fortsetzen-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="ueberwachung-fortsetzen-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0kvxwhg</bpmn:incoming>
       <bpmn:outgoing>Flow_0efwrhq</bpmn:outgoing>
     </bpmn:userTask>
@@ -119,10 +128,6 @@
     <bpmn:boundaryEvent id="Event_1og4ixx" name="Erfolgreiche Suche" attachedToRef="Activity_12mcgu1">
       <bpmn:outgoing>Flow_17j0zd9</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0id4u7y" />
-    </bpmn:boundaryEvent>
-    <bpmn:boundaryEvent id="Event_11gztyv" name="Rückflugbefehl" attachedToRef="Activity_12mcgu1">
-      <bpmn:outgoing>Flow_1g2krx2</bpmn:outgoing>
-      <bpmn:escalationEventDefinition id="EscalationEventDefinition_01ph6yf" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0lmpxp8" sourceRef="StartEvent_1" targetRef="Activity_0ru13bx" />
     <bpmn:sequenceFlow id="Flow_1ff11sx" sourceRef="Activity_0ru13bx" targetRef="Gateway_0eytsnd" />
@@ -163,8 +168,13 @@
       <bpmn:incoming>Flow_0lmpxp8</bpmn:incoming>
       <bpmn:outgoing>Flow_1ff11sx</bpmn:outgoing>
     </bpmn:receiveTask>
+    <bpmn:boundaryEvent id="Event_11gztyv" name="Rückflugbefehl" attachedToRef="Activity_12mcgu1">
+      <bpmn:outgoing>Flow_1g2krx2</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1vc168i" />
+    </bpmn:boundaryEvent>
   </bpmn:process>
   <bpmn:message id="SuchplanAnDrohne" name="SuchplanAnDrohne" />
+  <bpmn:message id="Verbindung-verloren" name="Verbindung-verloren" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0e3hf5p">
       <bpmndi:BPMNShape id="Participant_0o39u7x_di" bpmnElement="Participant_0o39u7x" isHorizontal="true">
@@ -265,16 +275,16 @@
       <bpmndi:BPMNShape id="Activity_1qqvtmu_di" bpmnElement="Activity_0ru13bx">
         <dc:Bounds x="270" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ayfi59_di" bpmnElement="Event_11gztyv">
-        <dc:Bounds x="662" y="352" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="683" y="393" width="74" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_028s6me_di" bpmnElement="Event_1og4ixx">
         <dc:Bounds x="562" y="352" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="492.5" y="356" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1ekgy74_di" bpmnElement="Event_11gztyv">
+        <dc:Bounds x="662" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="683" y="393" width="75" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0lmpxp8_di" bpmnElement="Flow_0lmpxp8">

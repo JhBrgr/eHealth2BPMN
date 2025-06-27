@@ -8,6 +8,10 @@
         "SuchplanAnDrohne": {
             "correlation_properties": {},
             "schema": {}
+        },
+        "Verbindung-verloren": {
+            "correlation_properties": {},
+            "schema": {}
         }
     }
 }
